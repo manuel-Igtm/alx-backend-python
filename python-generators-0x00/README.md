@@ -153,3 +153,23 @@ Edit
 ## 🧑‍💻 Author
 
 Immanuel Njogu
+
+
+
+🧩 Stream Users in Batches and Process
+This part of the project introduces two functions:
+
+stream_users_in_batches(batch_size)
+Connects to the database.
+
+Yields user data from the user_data table in batches of specified size.
+
+Uses the yield generator to stream data efficiently, especially for large datasets.
+
+batch_processing(batch_size)
+Uses stream_users_in_batches to get user batches.
+
+Filters and prints users whose age is greater than 25.
+
+Helps demonstrate practical batch processing using generators.
+
