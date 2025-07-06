@@ -122,6 +122,34 @@ python 0-main.py
 
 ---
 
+
+📤 Stream User Data with Generator
+The 0-stream_users.py script defines a generator function to stream user records one by one from the database.
+
+Function: stream_users()
+Prototype: def stream_users()
+
+Description: Connects to the ALX_prodev MySQL database and yields each row from the user_data table as a dictionary.
+
+Usage:
+
+python
+Copy
+Edit
+from itertools import islice
+from 0-stream_users import stream_users
+
+for user in islice(stream_users(), 6):
+    print(user)
+Sample Output:
+
+bash
+Copy
+Edit
+{'user_id': '...', 'name': '...', 'email': '...', 'age': ...}
+✅ Efficient for handling large datasets without loading everything into memory.
+
+
 ## 🧑‍💻 Author
 
 Immanuel Njogu
