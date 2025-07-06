@@ -1,37 +1,31 @@
 import mysql.connector
-from mysql.connector import Error
+
 
 def stream_users_in_batches(batch_size):
-    """Generator function that yields user records in batches."""
-    try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            database='ALX_prodev',
-            user='root',
-            password='Immamanu1234!'
-        )
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Immamanu1234!",  # Replace with your actual MySQL password
+        database="ALX_prodev"
+    )
 
-        if connection.is_connected():
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute("SELECT COUNT(*) as total FROM user_data")
-            total = cursor.fetchone()['total']
-            
-            for offset in range(0, total, batch_size):
-                cursor.execute(
-                    "SELECT * FROM user_data LIMIT %s OFFSET %s", (batch_size, offset))
-                rows = cursor.fetchall()
-                yield rows
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM user_data")
 
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
-    finally:
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
+    while True:
+        batch = cursor.fetchmany(batch_size)
+        if not batch:
+            break
+        yield batch
+
+    cursor.close()
+    connection.close()
+    return  # End of generator
+
 
 def batch_processing(batch_size):
-    """Processes batches and filters users older than 25."""
     for batch in stream_users_in_batches(batch_size):
         for user in batch:
-            if user['age'] > 25:
-                print(user)
+            if user.get("age", 0) > 25:
+                yield user
+    return  # Optional: end generator (StopIteration will be raised)
