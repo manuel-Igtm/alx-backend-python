@@ -34,3 +34,6 @@ with DatabaseConnection(
     for row in results:
         print(row)
     cursor.close()
+
+
+# SELECT * FROM users
