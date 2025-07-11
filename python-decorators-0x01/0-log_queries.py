@@ -1,9 +1,8 @@
 from datetime import datetime
-import sqlite3
+import mysql.connector
 import functools
 
 #### decorator to log SQL queries
-
 def log_queries(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -17,7 +16,12 @@ def log_queries(func):
 
 @log_queries
 def fetch_all_users(query):
-    conn = sqlite3.connect('users.db')
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='Immamanu1234!',
+        database='ALX_prodev'
+    )
     cursor = conn.cursor()
     cursor.execute(query)
     results = cursor.fetchall()
