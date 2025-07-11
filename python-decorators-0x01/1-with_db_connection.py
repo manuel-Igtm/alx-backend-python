@@ -19,7 +19,7 @@ def with_db_connection(func):
 @with_db_connection
 def get_user_by_id(conn, user_id):
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+    cursor.execute("SELECT * FROM user_data WHERE user_id = %s", (user_id,))
     return cursor.fetchone()
 
 #### Fetch user by ID with automatic connection handling
