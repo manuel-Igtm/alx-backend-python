@@ -9,6 +9,7 @@ router.register(r'conversations', ConversationViewSet, basename='conversation')
 router.register(r'messages', MessageViewSet, basename='message')
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
-    path("api/", include('chats.urls')),
+    path('api/', include('chats.urls')),
 ]
