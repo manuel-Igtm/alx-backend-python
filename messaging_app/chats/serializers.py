@@ -11,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
+    message_body = serializers.CharField()
 
     class Meta:
         model = Message
@@ -19,7 +20,16 @@ class MessageSerializer(serializers.ModelSerializer):
 class ConversationSerializer(serializers.ModelSerializer):
     participants = UserSerializer(many=True, read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
+    message_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ['conversation_id', 'participants', 'created_at', 'messages']
+        fields = ['conversation_id', 'participants', 'created_at', 'messages', 'message_count']
+
+    def get_message_count(self, obj):
+        return obj.messages.count()
+
+    def validate(self, data):
+        if 'participants' in data and len(data['participants']) < 2:
+            raise serializers.ValidationError("A conversation must have at least two participants.")
+        return data
