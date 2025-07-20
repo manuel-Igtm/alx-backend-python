@@ -6,15 +6,14 @@ from unittest.mock import patch, Mock
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """Test cases for access_nested_map"""
 
     @parameterized.expand([
-        ("nested_map_1", {"a": 1}, ("a",), 1),
-        ("nested_map_2", {"a": {"b": 2}}, ("a",), {"b": 2}),
-        ("nested_map_3", {"a": {"b": 2}}, ("a", "b"), 2),
+      ({"a": 1}, ("a",), 1),
+      ({"a": {"b": 2}}, ("a",), {"b": 2}),
+      ({"a": {"b": 2}}, ("a", "b"), 2),
+   
     ])
     def test_access_nested_map(self, name, nested_map, path, expected):
-        """Test access_nested_map returns expected result"""
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
