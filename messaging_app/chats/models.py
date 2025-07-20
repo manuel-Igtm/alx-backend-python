@@ -18,7 +18,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(default=timezone.now)
 
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
-    USERNAME_FIELD = 'username'  # or use 'email' if you want email-based login
+    USERNAME_FIELD = 'username'  # Can be changed to 'email' for email login
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -42,4 +42,3 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender.username} at {self.sent_at}"
-
