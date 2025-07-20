@@ -4,11 +4,11 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from utils import access_nested_map
+from .utils import access_nested_map
 
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map
+from .utils import access_nested_map
 
 
 class TestAccessNestedMap(unittest.TestCase):
