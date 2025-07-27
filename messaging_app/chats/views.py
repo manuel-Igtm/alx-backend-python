@@ -2,10 +2,13 @@ from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from .models import Conversation, Message, User
 from .serializers import ConversationSerializer, MessageSerializer
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsParticipantOfConversation
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all().prefetch_related('participants', 'messages')
     serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at']
 
@@ -27,6 +30,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all().select_related('sender', 'conversation')
     serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['sent_at']
 
