@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',  # Added DRF
     'chats',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt.token_blacklist', 
+    'django_filters',
 
 ]
 
@@ -92,7 +93,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
          'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'messaging_app.chats.pagination.MessagePagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
