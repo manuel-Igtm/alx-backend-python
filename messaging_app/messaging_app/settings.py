@@ -151,4 +151,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'chats.User'
+
+LOGIN_REDIRECT_URL = '/api/'  # or wherever you want users to go
+LOGOUT_REDIRECT_URL = '/api/token/'  # Optional

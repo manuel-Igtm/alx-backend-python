@@ -12,7 +12,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at']
-
+    
     def get_queryset(self):
         return Conversation.objects.filter(participants=self.request.user)
 
@@ -37,7 +37,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['sent_at']
-
+    
     def get_queryset(self):
         return Message.objects.filter(conversation__participants=self.request.user)
 

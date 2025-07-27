@@ -1,0 +1,192 @@
+{
+  "info": {
+    "name": "Messaging App API",
+    "_postman_id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+    "description": "Postman collection to test JWT auth, conversation creation, message sending, and fetching.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "JWT Token Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"your_username\",\n  \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "token"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conversations",
+      "item": [
+        {
+          "name": "Create Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participant_ids\": [\n    \"uuid-1\",\n    \"uuid-2\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/conversations/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "conversations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fetch Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/conversations/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "conversations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message_body\": \"Hello from Postman!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/conversations/<conversation_uuid>/messages/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "conversations",
+                "<conversation_uuid>",
+                "messages"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fetch Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/conversations/<conversation_uuid>/messages/?page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "conversations",
+                "<conversation_uuid>",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unauthorized Access",
+      "item": [
+        {
+          "name": "Try Fetching Conversations without Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/conversations/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "conversations"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
