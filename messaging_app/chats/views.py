@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from .models import Conversation, Message, User
 from .serializers import ConversationSerializer, MessageSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -11,6 +12,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at']
+
+    def get_queryset(self):
+        return Conversation.objects.filter(participants=self.request.user)
 
     def create(self, request, *args, **kwargs):
         participant_ids = request.data.get('participant_ids')
@@ -34,6 +38,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['sent_at']
 
+    def get_queryset(self):
+        return Message.objects.filter(conversation__participants=self.request.user)
+
     def create(self, request, *args, **kwargs):
         conversation_id = request.data.get('conversation_id')
         message_body = request.data.get('message_body')
@@ -48,6 +55,21 @@ class MessageViewSet(viewsets.ModelViewSet):
         except (Conversation.DoesNotExist, User.DoesNotExist):
             return Response({"error": "Invalid conversation or sender."}, status=status.HTTP_404_NOT_FOUND)
 
+        if request.user not in conversation.participants.all():
+            return Response({"error": "You are not a participant of this conversation."}, status=status.HTTP_403_FORBIDDEN)
+
         message = Message.objects.create(conversation=conversation, sender=sender, message_body=message_body)
         serializer = self.get_serializer(message)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user not in instance.conversation.participants.all():
+            return Response({"error": "You are not allowed to update this message."}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user not in instance.conversation.participants.all():
+            return Response({"error": "You are not allowed to delete this message."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)

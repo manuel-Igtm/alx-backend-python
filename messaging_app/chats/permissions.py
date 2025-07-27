@@ -11,4 +11,4 @@ class IsParticipantOfConversation(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Assumes obj is a Message or Conversation instance with a 'conversation' attribute
         participants = obj.conversation.participants.all()
-        return request.user in participants
+        return request.user in participants and request.method in ["GET", "POST", "PUT", "PATCH", "DELETE"]
