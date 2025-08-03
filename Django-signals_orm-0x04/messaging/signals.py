@@ -24,6 +24,9 @@ def save_message_history(sender, instance, **kwargs):
 
 @receiver(post_delete, sender=User)
 def cleanup_user_data(sender, instance, **kwargs):
-    # Related messages and notifications are deleted via CASCADE
-    # MessageHistory will be deleted through related messages
+    Message.objects.filter(sender=instance).delete()
+    Message.objects.filter(receiver=instance).delete()
+    Notification.objects.filter(user=instance).delete()
+    MessageHistory.objects.filter(message__sender=instance).delete()
+    MessageHistory.objects.filter(message__receiver=instance).delete()
     print(f"Cleaned up data for user {instance.username}")
