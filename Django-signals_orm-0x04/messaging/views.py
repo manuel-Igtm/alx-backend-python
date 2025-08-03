@@ -20,7 +20,8 @@ def delete_user(request):
 @login_required
 def user_threaded_conversations(request):
     user = request.user
-    messages = Message.objects.filter(sender=user).select_related('receiver', 'sender', 'edited_by').prefetch_related('replies')
+    messages = Message.objects.filter(sender=request.user).select_related('receiver', 'sender', 'edited_by').prefetch_related('replies')
+
 
     def build_thread(msg):
         return {
