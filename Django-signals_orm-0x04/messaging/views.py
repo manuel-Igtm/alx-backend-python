@@ -49,3 +49,27 @@ def unread_messages(request):
         for msg in unread
     ]
     return JsonResponse({'unread': data})
+
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
+...
+
+@login_required
+@cache_page(60)  # Cache this view for 60 seconds
+def user_threaded_conversations(request):
+    user = request.user
+    messages = Message.objects.filter(sender=request.user).select_related('receiver', 'sender', 'edited_by').prefetch_related('replies')
+
+    def build_thread(msg):
+        return {
+            'id': str(msg.message_id),
+            'content': msg.content,
+            'receiver': msg.receiver.username,
+            'timestamp': msg.timestamp,
+            'edited': msg.edited,
+            'replies': [build_thread(reply) for reply in msg.replies.all()]
+        }
+
+    threads = [build_thread(msg) for msg in messages if msg.parent_message is None]
+    return JsonResponse({'threads': threads}, safe=False)
