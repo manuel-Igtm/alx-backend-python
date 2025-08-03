@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from .models import Message
+from django.core.serializers import serialize
 
 User = get_user_model()
 
@@ -22,7 +23,6 @@ def user_threaded_conversations(request):
     user = request.user
     messages = Message.objects.filter(sender=request.user).select_related('receiver', 'sender', 'edited_by').prefetch_related('replies')
 
-
     def build_thread(msg):
         return {
             'id': str(msg.message_id),
@@ -35,3 +35,17 @@ def user_threaded_conversations(request):
 
     threads = [build_thread(msg) for msg in messages if msg.parent_message is None]
     return JsonResponse({'threads': threads}, safe=False)
+
+@login_required
+def unread_messages(request):
+    unread = Message.unread.unread_for_user(request.user).only('message_id', 'sender', 'content', 'timestamp')
+    data = [
+        {
+            'id': str(msg.message_id),
+            'sender': msg.sender.username,
+            'content': msg.content,
+            'timestamp': msg.timestamp
+        }
+        for msg in unread
+    ]
+    return JsonResponse({'unread': data})
