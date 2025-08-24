@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+echo "📦 Applying updated deployment (rolling update)..."
+kubectl apply -f messaging_app/blue_deployment.yaml
+
+echo "🔄 Monitoring rollout status..."
+kubectl rollout status deployment/messaging-app-blue
+
+echo "🚀 Testing app availability during rollout..."
+for i in {1..20}
+do
+  curl -s http://$(minikube ip):$(kubectl get svc messaging-app-service -o=jsonpath='{.spec.ports[0].nodePort}')/ || echo "❌ Request failed"
+  sleep 1
+done
+
+echo "✅ Rollout complete. Current pods:"
+kubectl get pods -l app=messaging-app
+
