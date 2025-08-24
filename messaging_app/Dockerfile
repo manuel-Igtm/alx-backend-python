@@ -20,3 +20,6 @@ EXPOSE 8000
 
 # Run the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
+# 2 Run: docker run -d -p 8000:8000 --name messaging_app_container messaging_app_image
