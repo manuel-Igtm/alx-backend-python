@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    tools {
+        // ShiningPanda plugin will handle Python installation
+        python 'Python3'
+    }
+
+    environment {
+        GITHUB_REPO = 'https://github.com/manuel-Igtm/alx-backend-python.git'
+        APP_DIR = 'messaging_app'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    url: "${GITHUB_REPO}", 
+                    credentialsId: 'github-credentials-id'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir("${APP_DIR}") {
+                    sh 'pip install --upgrade pip'
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir("${APP_DIR}") {
+                    sh 'pytest --junitxml=report.xml || true'
+                }
+            }
+            post {
+                always {
+                    junit '**/report.xml'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+    }
+}
