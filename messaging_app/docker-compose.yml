@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: messaging_db
+      MYSQL_USER: messaging_user
+      MYSQL_PASSWORD: messaging_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
+
   web:
     build: .
     container_name: messaging_app
@@ -9,3 +20,5 @@ services:
       - .:/app
     ports:
       - "8000:8000"
+    depends_on:
+      - db
