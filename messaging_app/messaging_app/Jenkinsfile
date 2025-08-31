@@ -5,6 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
+                    credentialsId: 'github-credentials',   // <-- FIX
                     url: 'https://github.com/manuel-Igtm/alx-backend-python.git'
             }
         }
